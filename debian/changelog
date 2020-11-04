@@ -1,0 +1,7 @@
+zabbix-iostat (1.1-1) stable; urgency=low
+
+  *  Initial package for Debian-based systems
+  *  Unified the minor patches required to support EL8 & 18.04
+
+ -- Mark Lehrer <mark.lehrer@wdc.com>  Fri, 23 Oct 2020 10:54:20 -0700
+

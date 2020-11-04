@@ -1,0 +1,2 @@
+/etc/cron.d/zabbix-iostat.cron
+/etc/zabbix/zabbix_agentd.conf.d/iostat.conf

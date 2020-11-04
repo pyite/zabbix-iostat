@@ -1,0 +1,11 @@
+1e98b9ddff73364cb1be1456186f16cf  usr/bin/iostat-collect.sh
+692a2fa057ba3a9fabc5d452b2a5a40e  usr/bin/iostat-parse.sh
+f0ff2a704b46d8892c40d67b8e4bb224  usr/bin/zab-iostat-hires.pl
+90b0f4793c1bcd27b8ac5f256e435677  usr/lib/systemd/system/zabbix-iostat.service
+4aa2155ee0ee5729d2cb7074ab8fed27  usr/share/doc/iostat-zabbix/iostat-disk-utilization-template.xml.gz
+d8e4e5f9182176a14cccdfe83874be62  usr/share/doc/zabbix-iostat/LICENSE.gz
+f46a0bf3ce6738f4b962ce93b508609b  usr/share/doc/zabbix-iostat/README.Debian
+cfa1c074f26f97911ef096a960341e05  usr/share/doc/zabbix-iostat/README.md
+e2a820509a9f1d822d192a4dafb7aecb  usr/share/doc/zabbix-iostat/changelog.Debian.gz
+82d6487f75982279b72b75309bfe90ed  usr/share/doc/zabbix-iostat/copyright
+97412bc3535cf14acb14031122c08098  usr/share/doc/zabbix-iostat/zabbix-iostat.spec

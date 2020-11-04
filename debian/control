@@ -1,0 +1,14 @@
+Source: zabbix-iostat
+Section: unknown
+Priority: optional
+Maintainer: Mark Lehrer <mark.lehrer@wdc.com>
+Build-Depends: debhelper (>= 8.0.0)
+Standards-Version: 3.9.4
+Homepage: <insert the upstream URL, if relevant>
+
+Package: zabbix-iostat
+Architecture: all
+#Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: libregexp-common-perl, zabbix-agent
+Description: iostat template and colletion scripts for Zabbix (best viewed in Grafana)
+

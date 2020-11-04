@@ -1,0 +1,10 @@
+iostat-collect.sh usr/bin/
+iostat-disk-utilization-template.xml usr/share/doc/iostat-zabbix/
+iostat-parse.sh usr/bin/
+iostat.conf etc/zabbix/zabbix_agentd.conf.d/
+LICENSE usr/share/doc/zabbix-iostat/
+README.md usr/share/doc/zabbix-iostat/
+zab-iostat-hires.pl usr/bin/
+zabbix-iostat.service usr/lib/systemd/system/
+zabbix-iostat.cron etc/cron.d/
+zabbix-iostat.spec usr/share/doc/zabbix-iostat/

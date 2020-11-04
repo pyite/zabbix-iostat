@@ -1,0 +1,10 @@
+
+[Unit]
+Description=Zabbix iostat collector
+
+[Service]
+ExecStart=/usr/bin/zab-iostat-hires.pl
+
+[Install]
+WantedBy=multi-user.target
+

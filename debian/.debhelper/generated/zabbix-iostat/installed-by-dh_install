@@ -1,0 +1,10 @@
+./iostat-collect.sh
+./iostat-disk-utilization-template.xml
+./iostat-parse.sh
+./iostat.conf
+./LICENSE
+./README.md
+./zab-iostat-hires.pl
+./zabbix-iostat.service
+./zabbix-iostat.cron
+./zabbix-iostat.spec
