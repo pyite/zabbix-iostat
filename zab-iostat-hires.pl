@@ -99,7 +99,7 @@ sub run_iostat {
 		$devinfo[$i] =~ s/%//g;  #  Zabbix doesn't particularly care for % symbols
 #		$devstats{$devindex[$i]} = $devinfo[$i];
 #		store_dev_stats( $current_timestamp, $devinfo[0], \%devstats );
-		my $send_line = sprintf( "%s iostat.metric[%s,%s] %s %s\n",
+		my $send_line = sprintf( "\"%s\" iostat.metric[%s,%s] %s %s\n",
 					 $conf->{HOSTNAME},
 					 $devname,
 					 $key,
@@ -152,6 +152,30 @@ sub read_zabbix_address {
     return 666;
 }
 
+sub lookup_zabbix_hostname {
+    #
+    #  In the rare case where we run this on the Zabbix server, we need to use 'Zabbix server' as the
+    #  hostname in zabbix_sender instead of hostname -s
+    #
+    my $zabbix_agentd_conf;
+
+    foreach my $conffile ( '/etc/zabbix_agentd.conf', '/etc/zabbix/zabbix_agentd.conf' ) {
+	if ( -f $conffile ) {
+	    $zabbix_agentd_conf = $conffile;
+	    last;
+	}
+    }
+    my $agent_hostname = `hostname -s`;
+    chomp( $agent_hostname );
+
+    open( ZABAGENT, "< $zabbix_agentd_conf" ) or die "Error opening zabbix config\n";
+    while( <ZABAGENT> ) {
+	if ( $_ =~ /^Hostname=Zabbix server/i ) {
+	    $agent_hostname = 'Zabbix server';
+	}
+    }
+    return $agent_hostname;
+}
 
 sub build_conf {
     #
@@ -161,8 +185,7 @@ sub build_conf {
 
     $conf{DEV_REREAD_INTERVAL} = 300;
     $conf{ZABBIX_ADDRESS} = read_zabbix_address();
-    $conf{HOSTNAME} = `hostname -s`;
-    chomp( $conf{HOSTNAME} );
+    $conf{HOSTNAME} = lookup_zabbix_hostname();
 
     $conf{SKIPITEMS} = {
 #	'rrqm/s' => 1,

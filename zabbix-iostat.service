@@ -4,6 +4,9 @@ Description=Zabbix iostat collector
 
 [Service]
 ExecStart=/usr/bin/zab-iostat-hires.pl
+RemainAfterExit=no
+Restart=always
+RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
