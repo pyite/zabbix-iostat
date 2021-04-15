@@ -9,6 +9,6 @@ Homepage: <insert the upstream URL, if relevant>
 Package: zabbix-iostat
 Architecture: all
 #Depends: ${shlibs:Depends}, ${misc:Depends}
-Depends: libregexp-common-perl, zabbix-agent
+Depends: libregexp-common-perl, zabbix-agent, libtimedate-perl
 Description: iostat template and colletion scripts for Zabbix (best viewed in Grafana)
 

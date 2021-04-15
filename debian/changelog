@@ -1,3 +1,15 @@
+zabbix-iostat (1.1-3) stable; urgency=low
+
+  * Had an echo where an exit should have been
+
+ -- Mark Lehrer <mark.lehrer@wdc.com>  Wed, 14 Apr 2021 20:02:20 -0700
+
+zabbix-iostat (1.1-2) stable; urgency=low
+
+  *  Added dependency for libtimedate-perl
+
+ -- Mark Lehrer <mark.lehrer@wdc.com>  Mon, 01 Mar 2021 19:35:20 -0700
+
 zabbix-iostat (1.1-1) stable; urgency=low
 
   *  Initial package for Debian-based systems
