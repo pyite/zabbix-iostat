@@ -17,4 +17,3 @@ LC_ALL=C ; export LC_ALL
 DISK=$($IOSTAT -x 15 3 | awk 'BEGIN {check=0;} {if(check==1 && $1=="avg-cpu:"){check=0}if(check==1 && $1!=""){print $0}if($1=="Device" || $1=="Device:"){check=1}}' | tr '\n' '|' | tr '!' '_')
 echo "$DISK" | sed 's/|/\n/g' > "$TOFILE"
 exit 0
-
