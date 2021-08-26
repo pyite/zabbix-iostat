@@ -35,6 +35,7 @@ cp iostat.conf %{buildroot}/etc/zabbix/zabbix-agentd.d/
 echo ""
 echo "WARNING: zabbix_sender is required, but some Zabbix packagers put it in a separate zabbix-sender package"
 echo ""
+systemctl daemon-reload
 systemctl start zabbix-iostat.service
 systemctl restart zabbix-agent.service
 
