@@ -1,7 +1,7 @@
 Summary: Daemon to push per-second iostat results to Zabbix
 Name: zabbix-iostat
 Version: 1.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Source: zabbix-iostat-1.1.tar.gz
 License: Apache v2
 BuildRoot: /var/tmp/%{name}-buildroot 
