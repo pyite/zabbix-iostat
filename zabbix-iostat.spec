@@ -5,7 +5,7 @@ Release: 2%{?dist}
 Source: zabbix-iostat-1.1.tar.gz
 License: Apache v2
 BuildRoot: /var/tmp/%{name}-buildroot 
-Requires: zabbix-sender perl-TimeDate
+Requires: perl-TimeDate
 
 %description
 
@@ -31,6 +31,10 @@ cp iostat.conf %{buildroot}/etc/zabbix/zabbix-agentd.d/
 %pre 
 
 %post 
+
+echo ""
+echo "WARNING: zabbix_sender is required, but some Zabbix packagers put it in a separate zabbix-sender package"
+echo ""
 systemctl start zabbix-iostat.service
 systemctl restart zabbix-agent.service
 
