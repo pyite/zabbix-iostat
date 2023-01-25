@@ -2,7 +2,12 @@
 #
 #  Collect per-second disk stats and push into Zabbix
 #
-#  Complicated because iostat doesn't appear to be able to detect newly-attached devices
+#  To enable debugging, edit the appropriate line in build_conf()
+#
+#  Different distro versions use different columns, so if there are failures you may need to edit the zabbix IOSTAT template
+#  or change the column names such as the aqu-sz hack below.
+#
+#  Note that iostat doesn't appear to be able to detect newly-attached devices so maybe restart after reconfiguration
 #
 use strict;
 
@@ -13,9 +18,8 @@ our $conf = build_conf();
 
 while( 1 ) {
     #
-    #  Run the loop
+    #  Run the loop - restart iostat if it dies somehow
     #
-    print STDERR "Starting iostat...\n";
     die "Error running iostat\n" if run_iostat();
     
 }
@@ -36,11 +40,17 @@ sub run_iostat {
     #  the input data indicates that hostname also should be used from the same configuration file.
     #
     my $iostat_cmd = sprintf( "iostat -mtxy 1 %d", $conf->{DEV_REREAD_INTERVAL} );
-    print STDERR "Attempting to execute: $iostat_cmd\n";
+    if ( defined( $conf->{DEBUG} ) && $conf->{DEBUG} ) {
+	print STDERR "Attempting to execute: $iostat_cmd\n";
+    }
     open( IOSTAT, "$iostat_cmd |" ) or die "Error executing iostat with $iostat_cmd\n";
 
     my $zabbix_cmd = "| zabbix_sender -vv -c /etc/zabbix/zabbix_agentd.conf -T -i -";
-    print STDERR "Attempting to execute: $zabbix_cmd\n";
+    if ( defined( $conf->{DEBUG} ) && $conf->{DEBUG} ) {
+	print STDERR "Attempting to execute: $zabbix_cmd\n";
+    } else {
+	$zabbix_cmd .= " > /dev/null 2> /dev/null";
+    }
     open( SENDER, $zabbix_cmd ) or die "Error executing zabbix command: $zabbix_cmd\n\n";
 
     my $current_timestamp;
@@ -52,7 +62,9 @@ sub run_iostat {
 	chomp( $line );
 	next if $line =~ /^$/;
 
-#	print STDERR "Working on: $line\n";
+	if ( defined( $conf->{DEBUG} ) && $conf->{DEBUG} ) {
+	    print STDERR "Working on iostat output line: $line\n";
+	}
 
 	#
 	#  Check for a date, set the state to STATS
@@ -73,7 +85,9 @@ sub run_iostat {
 	    $devindex[0] = 'skipnexttime';
 	    my @header = split( /\s+/, $line );
 	    for( my $i = 1; $i <= $#header; $i ++ ) {
-#		print STDERR "Saving heading $header[$i] to $i\n";
+		if ( defined( $conf->{DEBUG} ) && $conf->{DEBUG} ) {
+		    print STDERR "Saving heading $header[$i] to $i\n";
+		}
 		$header[$i] =~ s/%//g;  #  Zabbix doesn't particularly care for % symbols
 		if ( $header[$i] eq 'aqu-sz' ) {
 		    $header[$i] = 'avgqu-sz';       #   why
@@ -90,22 +104,26 @@ sub run_iostat {
 	    $devname =~ s/!/_/g;  #  Excelero... why did you choose !
 	    for( my $i = 1; $i <= $#devinfo; $i ++ ) {
 		if ( defined( $conf->{SKIPITEMS}->{$devindex[$i]} ) ) {
-#		    print STDERR "Skipping item $devindex[$i]\n";
+		    if ( defined( $conf->{DEBUG} ) && $conf->{DEBUG} ) {
+			print STDERR "Skipping item $devindex[$i]\n";
+		    }
 		    next;
 		}
 		my $data = $devinfo[$i];
 		my $key = $devindex[$i] . '-hr';
-#		print STDERR "Saving $devinfo[$i] to key $devindex[$i]\n";
+		if ( defined( $conf->{DEBUG} ) && $conf->{DEBUG} ) {
+		    print STDERR "Saving $devinfo[$i] to key $devindex[$i]\n";
+		}
 		$devinfo[$i] =~ s/%//g;  #  Zabbix doesn't particularly care for % symbols
-#		$devstats{$devindex[$i]} = $devinfo[$i];
-#		store_dev_stats( $current_timestamp, $devinfo[0], \%devstats );
-		my $send_line = sprintf( "\"%s\" iostat.metric[%s,%s] %s %s\n",
+		my $send_line = sprintf( "%s iostat.metric[%s,%s] %s %s\n",
 					 $conf->{HOSTNAME},
 					 $devname,
 					 $key,
 					 $current_timestamp,
 					 $data );
-#		print STDERR "Sending: $send_line\n";
+		if ( defined( $conf->{DEBUG} ) && $conf->{DEBUG} ) {
+		    print STDERR "Sending: $send_line\n";
+		}
 		print SENDER $send_line;
 	    }				  
 	}
@@ -114,14 +132,6 @@ sub run_iostat {
     close( IOSTAT );
     close( SENDER );
 
-    return 0;
-}
-
-
-sub store_dev_stats {
-    my ( $stamp, $device, $data ) = @_;
-    print STDERR "Saving to zabbix server $conf->{ZABBIX_ADDRESS}: " .
-                 "device $device, timestamp $stamp, data sample $data->{'rMB/s'}\n";
     return 0;
 }
 
@@ -152,6 +162,7 @@ sub read_zabbix_address {
     return 666;
 }
 
+
 sub lookup_zabbix_hostname {
     #
     #  In the rare case where we run this on the Zabbix server, we need to use 'Zabbix server' as the
@@ -177,16 +188,20 @@ sub lookup_zabbix_hostname {
     return $agent_hostname;
 }
 
+
 sub build_conf {
     #
-    #
+    #  This should be used more to reduce failures and wasted bandwidth
     #
     my %conf;
+
+    $conf{DEBUG} = 0;
 
     $conf{DEV_REREAD_INTERVAL} = 300;
     $conf{ZABBIX_ADDRESS} = read_zabbix_address();
     $conf{HOSTNAME} = lookup_zabbix_hostname();
 
+    #   should probably move this to a config file some day
     $conf{SKIPITEMS} = {
 #	'rrqm/s' => 1,
 #	'wrqm/s' => 1,
