@@ -1,3 +1,11 @@
+
+zabbix-iostat (1.2-1) stable; urgency=low
+
+  * Added control option for debugging output
+  * Change the host name if running on a Zabbix server
+
+ -- Mark Lehrer <mark.lehrer@wdc.com>  Thu, 26 Jan 2023 13:20:20 -0700
+
 zabbix-iostat (1.1-3) stable; urgency=low
 
   * Had an echo where an exit should have been
